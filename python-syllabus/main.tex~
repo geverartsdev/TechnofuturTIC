@@ -1,0 +1,112 @@
+\documentclass[12pt,a4paper,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{pdfpages}
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+
+\newcommand{\maintitle}{Python\\
+\vspace{0.5\baselineskip}
+Introduction à Python et Raspberry Pi\\     % Titre
+\vspace{\baselineskip}
+{\Large \em Syllabus}}
+\newcommand{\authors}{Guillaume \textsc{Everarts de Velp}, Lucas \textsc{Ody}} % Auteurs
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{listings}   
+\usepackage{makecell}
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal% incl. code langages info
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\newcommand\pythonstyle{\lstset{
+  language=Python,
+  backgroundcolor=\color{white}, %%%%%%%
+  basicstyle=\ttm,
+  otherkeywords={self},            
+  keywordstyle=\ttb\color{deepblue},
+  emph={MyClass,__init__},          
+  emphstyle=\ttb\color{deepred},    
+  stringstyle=\color{deepgreen},
+  commentstyle=\color{red},  %%%%%%%%
+  frame=tb,                         
+  showstringspaces=False,
+  inputencoding=latin1
+}}
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+\usepackage{lipsum}                         % faux texte
+\usepackage{fullpage}                       % utilisation de toute la page.
+\usepackage{csvsimple}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{xcolor}
+\definecolor{darkgreen}{rgb}{0.13,0.54,0.13}
+\usepackage{setspace}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+
+\begin{document}
+
+\input{frontpage.tex}
+
+\tableofcontents
+
+\chapter{Introduction et programme de la semaine}
+\input{introduction.tex}
+
+
+\chapter{Présentation de Python et installation des outils}
+\input{python/presentation_python}
+
+
+\chapter{Programmer en Python}
+%Ordre d'apprentissage à discuter
+Maintenant que vous savez écrire un programme ainsi que l'exécuter et que vous avez écrit votre premier code, nous pouvons passer aux concepts de base de \textsc{Python}.
+\input{python/base_python.tex}
+\input{python/approfondissement_python.tex}
+
+
+\chapter{Raspberry Pi}
+\input{raspberry/presentation_raspberry.tex}
+
+\input{raspberry/utilisation_raspberry.tex}
+
+
+\chapter{Conclusion}
+
+Durant cette semaine, vous avez appris les bases du Python : variables, conditions, boucles, fonctions, listes, etc. On a donné un introduction à la programmation orienté-objet. Libre à vous désormais de poursuivre cet apprentissage! Le Python est un des langages les plus utilisés, ce qui veut dire qu'il y a aussi énormément de ressources en ligne pour apprendre par soi-même.
+
+On pense notamment à l'excellent OpenClassrooms\footnote{\url{https://openclassrooms.com/courses/apprenez-a-programmer-en-python}}, ou à ce tutoriel sur Développez.com\footnote{\url{https://python.developpez.com/cours/apprendre-python3/}}.\\
+
+Vous avez aussi découvert le Raspberry Pi. Étonnant petit ordinateur, il n'en est pas moins capable! D'autres curieux tels que vous ont utilisé leur Raspberry Pi dans des projets surprenants! Certains sont listés sur Instructables\footnote{\url{http://www.instructables.com/id/Raspberry-Pi-Projects/}}, avec des explications pas-à-pas.\\
+
+Enfin, nous espérons que vous avez apprécié ce stage, et que vous continuerez à explorer les infinies possibilités de l'informatique!
+
+
+\chapter{Annexe}
+
+\section{Les bonnes pratiques du programmeur}
+\input{appendix/bonnes_pratiques}
+
+\section{Bases d'électricité}
+\input{appendix/base_elec.tex}
+
+\includepdf[pages={1,2}]{memento.pdf}
+
+\end{document}

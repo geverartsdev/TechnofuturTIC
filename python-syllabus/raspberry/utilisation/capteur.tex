@@ -1,0 +1,49 @@
+Le Raspberry PI est un ordinateur embarqué, il permet donc de réaliser des systèmes utilisant des capteurs et pouvant interagir avec son environnement. Pour ce projet final, vous disposez d'un capteur à ultrasons permettant de mesurer une distance. Nous allons donc l'utiliser pour réaliser un radar de recul comme ceux présent dans les voiture, nous avertissant de l'approche d'un objet.
+
+L'utilisation de ce capteur ne nécessite aucune installation mais pour faciliter un peu les choses, voici un script Python permettant de mesurer la distance :
+
+\begin{python}
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+GPIO_TRIGGER = 18   # PIN connecte a la borne TRIGGER du capteur
+GPIO_ECHO = 24      # PIN connecte a la borne ECHO du capteur
+
+GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
+GPIO.setup(GPIO_ECHO, GPIO.IN)
+
+def distance():
+    # set Trigger to HIGH
+    GPIO.output(GPIO_TRIGGER, True)
+
+    # set Trigger after 0.01ms to LOW
+    time.sleep(0.00001)
+    GPIO.output(GPIO_TRIGGER, False)
+
+    StartTime = time.time()
+    StopTime = time.time()
+
+    # save StartTime
+    while GPIO.input(GPIO_ECHO) == 0:
+        StartTime = time.time()
+
+    # save time of arrival
+    while GPIO.input(GPIO_ECHO) == 1:
+        StopTime = time.time()
+
+    # time difference between start and arrival
+    TimeElapsed = StopTime - StartTime
+    # multiply with the sonic speed (34300 cm/s)
+    # and divide by 2, because there and back
+    distance = (TimeElapsed * 34300) / 2
+
+    return distance
+
+def cleanup():
+    GPIO.cleanup()
+
+\end{python}
+
+Cette fonction permet de lire la distance mesurée par le capteur. En appliquant toutes les notions vues lors de la semaine, réalisez un programme qui allume les LED en fonction de la distance.
