@@ -3,6 +3,9 @@
 # Edit at https://www.gitignore.io/?templates=latex
 
 ### LaTeX ###
+## Temporary files
+*.tex~
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
