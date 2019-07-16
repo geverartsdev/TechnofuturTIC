@@ -3,12 +3,12 @@
 import random
 
 from project.utils import *
+from project.HCSR04 import Sensor
 from project.constants import *
 from project.components.vaisseau import Vaisseau, Tir
 from project.components.alien import Alien
 from project.components.explosion import Explosion
 from project.components.score import Score
-from project.components.background import Background
 
 # see if we can load more than standard BMP
 if not pygame.image.get_extended():
@@ -23,7 +23,6 @@ def images():
     Cette methode s'occupe de charger et d'assigner les images au elements du jeu qui en ont besoin
     :return: ∅
     """
-    Background.image = load_image('background.png')  # On utilise ici la methode load_image qui a ete definie dans
     Vaisseau.image = load_image('spacecraft.gif')    # le fichier utils.py
     img = load_image('explosion1.gif')
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
@@ -42,34 +41,13 @@ def fenetre():
     pygame.display.set_caption('Pygame Aliens')  # On choisit le titre
     pygame.mouse.set_visible(0)  # On cache la souris
 
-
-def sons():
-    """
-    Cette methode s'occupe de charger les sons du jeu et lance la musique principale
-    :return: boom_sound, shoot_sound => Les sons d'explosion et de tir
-    """
-    boom_sound = load_sound('boom.wav')  # On utilise ici la methode load_sound definie dans utils.py
-    shoot_sound = load_sound('car_door.wav')
-    if pygame.mixer and SONS:
-        music = os.path.join(main_dir, 'src/sound', 'house_lo.wav')
-        pygame.mixer.music.load(music)
-        pygame.mixer.music.play(-1)
-
-    return boom_sound, shoot_sound
-
-
 def main():
     """
     Fonction principale, appellee lors de l'execution du script
     :return: ∅
     """
     # Initialisation de pygame
-    if pygame.get_sdl_version()[0] == 2:
-        pygame.mixer.pre_init(44100, 32, 2, 1024)
     pygame.init()
-    if pygame.mixer and not pygame.mixer.get_init():
-        print('Warning, no sound')
-        pygame.mixer = None
 
     # Definit le mode de la fenetre
     winstyle = 0  # FULLSCREEN
@@ -82,8 +60,7 @@ def main():
     # Reglage de la fenetre
     fenetre()
 
-    # Chargement des effets sonores
-    boom_sound, shoot_sound = sons()
+    sensor = Sensor()
 
     # On cree des groupes de jeu (un peu mystique, ce sont des listes qui vont garder une trace des differents elements
     # qui seront crees et qui les ajoutent automatiquement lors de leur creation)
@@ -93,7 +70,7 @@ def main():
     lastalien = pygame.sprite.GroupSingle()
 
     # On assigne a chaque classe un (ou des) groupe(s) qui lui correspond(ent)
-    Background.containers = all
+    #Background.containers = all
     Vaisseau.containers = all
     Alien.containers = aliens, all, lastalien
     Tir.containers = shots, all
@@ -107,8 +84,8 @@ def main():
     # On initialise les elements du jeu, nous n'avons pas toujours besoin de garder une reference grace a l'utilisation
     # des containers, qui s'occupent de les recuperer lors de leur creation (plus de details dans les differents
     # elements)
-    Background(0)                             # On cree deux images de fond d'ecran, qui se suivent, pour qu'au moins
-    Background(Background.image.get_width())  # une se trouve a chaque fois visible par l'utilisateur
+    #Background(0)                             # On cree deux images de fond d'ecran, qui se suivent, pour qu'au moins
+    #Background(Background.image.get_width())  # une se trouve a chaque fois visible par l'utilisateur
     player = Vaisseau()  # On cree le joueur, on garde une reference pour pouvoir lui appliquer des actions
     score = Score()  # On cree le score, on garde une reference pour pouvoir le mettre a jour
     Alien()  # On cree un premier alien
@@ -130,35 +107,33 @@ def main():
         all.update()
 
         # On reagit aux actions du joueur
-        dirx = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
-        diry = keystate[pygame.K_DOWN] - keystate[pygame.K_UP]
-        player.move((dirx, diry))
+        #dirx = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
+        #diry = keystate[pygame.K_DOWN] - keystate[pygame.K_UP]
+        #player.move((dirx, diry))
+        if sensor.getDis() > 10:
+            player.move((0,1))
+        else:
+            player.move((0,-1))
         firing = keystate[pygame.K_SPACE]
         if not player.reloading and firing and len(shots) < MAX_TIRS:
             Tir(player.gunpos())
-            if SONS:
-                shoot_sound.play()
         player.reloading = firing
 
         # Creation (eventuelle) d'un nouvel alien
         if alien_suivant > 0:
             alien_suivant = alien_suivant - 1
-        elif not int(random.random() * PROBA_ALIEN):
+        elif len(aliens) <= MAX_ALIEN and not int(random.random() * PROBA_ALIEN):
             Alien()
             alien_suivant = NOUVEL_ALIEN
 
         # Detection des collisions
         for alien in pygame.sprite.spritecollide(player, aliens, 1):
-            if SONS:
-                boom_sound.play()
             Explosion(alien)
             Explosion(player)
             score.point()
             player.kill()
 
         for alien in pygame.sprite.groupcollide(shots, aliens, 1, 1).keys():
-            if SONS:
-                boom_sound.play()
             Explosion(alien)
             score.point()
 
@@ -166,15 +141,12 @@ def main():
         dirty = all.draw(screen)
         pygame.display.update(dirty)
 
-        # On definit le teu de rafraichissement de la fenetre
-        clock.tick(40)  # La fenetre ne se rafraichira jamais plus de 40 fois par seconde
+        # On definit le taux de rafraichissement de la fenetre
+        clock.tick(30)  # La fenetre ne se rafraichira jamais plus de 30 fois par seconde
 
     # La partie est terminee, on affiche dans le terminal le score final
     print("Final score = " + str(score.score()))
 
-    if pygame.mixer:
-        pygame.mixer.music.fadeout(1000)
-    pygame.time.wait(1000)
     pygame.quit()
 
 

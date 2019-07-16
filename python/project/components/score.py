@@ -23,6 +23,5 @@ class Score(pygame.sprite.Sprite):
     def update(self):
         if self.modif:
             msg = "Score: " + str(self.valeur)
-            print(msg)
             self.image = self.font.render(msg, 0, self.color)
             self.modif = False
