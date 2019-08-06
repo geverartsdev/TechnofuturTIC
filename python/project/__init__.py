@@ -60,7 +60,7 @@ def main():
     # Reglage de la fenetre
     fenetre()
 
-    sensor = Sensor()
+    #sensor = Sensor()
 
     # On cree des groupes de jeu (un peu mystique, ce sont des listes qui vont garder une trace des differents elements
     # qui seront crees et qui les ajoutent automatiquement lors de leur creation)
@@ -110,7 +110,7 @@ def main():
         #dirx = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
         #diry = keystate[pygame.K_DOWN] - keystate[pygame.K_UP]
         #player.move((dirx, diry))
-        if sensor.getDis() > 10:
+        if keystate[pygame.K_UP]:
             player.move((0,1))
         else:
             player.move((0,-1))
