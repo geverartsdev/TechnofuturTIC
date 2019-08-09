@@ -9,6 +9,30 @@ Everarts de Velp Guillaume, Ody Lucas
 git clone https://github.com/geverartsdev/TechnofuturTIC.git
 ```
 
+## Installer le jeu sur windows
+####  1. Installer python.
+Pensez à cocher la case PATH lors de l'installation!
+pour vérifier que l'installation c'est bien déroulée, ouvrez l'invite de commande windows (win + R => cmd, ou simplement cherchez "cmd" dans la barre de recherce du menu démarrer) et entrez-y la commande suivante: 
+
+    python
+
+ Si l'interpreteur python s'ouvre, tout va bien! (vous pouvez fermer python avec "exit()")
+#### 2. Installer pygame
+Dans l'invite de commande, entrez la commande suivante : 
+
+    pip install pygame
+    
+Attendez la fin de l'installation
+#### 3. Lancer le script "launcher.bat"
+Et voilà! si tout fonctionne, le jeu se lance!
+
+#### 4. Si launch.bat ne fait rien...
+essayer de lancer launch.bat depuis l'invite de commande, utilisez
+    
+    cd <sous-dossier>
+    
+pour naviger vers un <sous-dossier>. une fois arrivé dans le dossier TechnofuturTIC/python, lancez launch.bat en tapant son nom, et l'erreur devrait s'afficher!
+
 ## License
 Copyright 2019 Everarts de Velp Guillaume, Ody Lucas
 
