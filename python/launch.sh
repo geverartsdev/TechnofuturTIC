@@ -4,3 +4,5 @@
 d=$(pwd)
 export PYTHONPATH=$PYTHONPATH:$d
 python3 project/__init__.py
+
+sleep 10

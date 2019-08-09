@@ -9,6 +9,8 @@ from project.components.vaisseau import Vaisseau, Tir
 from project.components.alien import Alien
 from project.components.explosion import Explosion
 from project.components.score import Score
+from project.components.vie import Vie
+from project.components.background import Background
 
 # see if we can load more than standard BMP
 if not pygame.image.get_extended():
@@ -28,7 +30,7 @@ def images():
     Explosion.images = [img, pygame.transform.flip(img, 1, 1)]
     Alien.images = load_images('alien1.gif', 'alien2.gif', 'alien3.gif')
     Tir.image = load_image('shot.gif')
-
+    Background.image = load_image('background.jpeg')
 
 def fenetre():
     """
@@ -38,7 +40,7 @@ def fenetre():
     """
     icon = pygame.transform.scale(Alien.images[0], (32, 32))  # On utilise l'image de l'alien et on la redimensionne
     pygame.display.set_icon(icon)  # On definit une icone
-    pygame.display.set_caption('Pygame Aliens')  # On choisit le titre
+    pygame.display.set_caption('Aliens Exploration')  # On choisit le titre
     pygame.mouse.set_visible(0)  # On cache la souris
 
 def main():
@@ -48,6 +50,7 @@ def main():
     """
     # Initialisation de pygame
     pygame.init()
+    font = pygame.font.SysFont("comicsansms", 72)
 
     # Definit le mode de la fenetre
     winstyle = 0  # FULLSCREEN
@@ -57,8 +60,7 @@ def main():
     # Chargement des images et assignement aux classes
     images()
 
-    # Reglage de la fenetre
-    fenetre()
+    
 
     #sensor = Sensor()
 
@@ -66,16 +68,19 @@ def main():
     # qui seront crees et qui les ajoutent automatiquement lors de leur creation)
     aliens = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    back = pygame.sprite.RenderUpdates()
     all = pygame.sprite.RenderUpdates()
     lastalien = pygame.sprite.GroupSingle()
 
     # On assigne a chaque classe un (ou des) groupe(s) qui lui correspond(ent)
     #Background.containers = all
-    Vaisseau.containers = all
+    Background.containers = back
     Alien.containers = aliens, all, lastalien
     Tir.containers = shots, all
+    Vaisseau.containers = all
     Explosion.containers = all
     Score.containers = all
+    Vie.containers = all
 
     # On definit quelques valeurs de depart
     alien_suivant = NOUVEL_ALIEN
@@ -89,6 +94,8 @@ def main():
     player = Vaisseau()  # On cree le joueur, on garde une reference pour pouvoir lui appliquer des actions
     score = Score()  # On cree le score, on garde une reference pour pouvoir le mettre a jour
     Alien()  # On cree un premier alien
+    vie = Vie()
+    Background(0)
 
     # Ici le jeu commence vraiment, dans cette boucle est defini toute la mecanique du jeu
     while player.alive():
@@ -110,13 +117,19 @@ def main():
         #dirx = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
         #diry = keystate[pygame.K_DOWN] - keystate[pygame.K_UP]
         #player.move((dirx, diry))
-        if keystate[pygame.K_UP]:
+        if keystate[pygame.K_DOWN]:
             player.move((0,1))
-        else:
+        if keystate[pygame.K_UP]:
             player.move((0,-1))
+        if keystate[pygame.K_LEFT]:
+            player.move((-1,0))
+            Vaisseau.image = load_image('spacecraft2.gif')            
+        if keystate[pygame.K_RIGHT]:
+            player.move((1,0))
+            Vaisseau.image = load_image('spacecraft.gif')         
         firing = keystate[pygame.K_SPACE]
         if not player.reloading and firing and len(shots) < MAX_TIRS:
-            Tir(player.gunpos())
+            Tir(player.gunpos(), player.direction)
         player.reloading = firing
 
         # Creation (eventuelle) d'un nouvel alien
@@ -129,15 +142,18 @@ def main():
         # Detection des collisions
         for alien in pygame.sprite.spritecollide(player, aliens, 1):
             Explosion(alien)
-            Explosion(player)
-            score.point()
-            player.kill()
+            player.life()
+            vie.mort()
+            if not player.alive():
+                Explosion(player)
 
         for alien in pygame.sprite.groupcollide(shots, aliens, 1, 1).keys():
             Explosion(alien)
             score.point()
 
         # On dessine les elements
+        dirty = back.draw(screen)
+        pygame.display.update(dirty)
         dirty = all.draw(screen)
         pygame.display.update(dirty)
 

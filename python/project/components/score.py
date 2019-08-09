@@ -17,6 +17,10 @@ class Score(pygame.sprite.Sprite):
         self.valeur += 1
         self.modif = True
 
+    def penalite(self):
+        self.valeur -= 1
+        self.modif = True
+
     def score(self):
         return self.valeur
 

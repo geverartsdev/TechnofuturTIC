@@ -3,7 +3,7 @@ from project.constants import ECRAN
 
 
 class Background(pygame.sprite.Sprite):
-    vitesse = 5
+    vitesse = 0
 
     def __init__(self, posx):
         pygame.sprite.Sprite.__init__(self, self.containers)
