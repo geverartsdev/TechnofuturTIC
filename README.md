@@ -10,6 +10,11 @@ git clone https://github.com/geverartsdev/TechnofuturTIC.git
 ```
 
 ## Installer le jeu sur windows
+
+Pensez à retirer toute référence au capteur (Sensor.py) de votre code; en effet, celui-ci ne fonctionnne que sous Raspberry Pi.
+
+Le passage par clé usb, internet ou autre peut avoir ENLEVÉ le status d'éxécutable à launch.bat; assurez-vous de restaurer cette permission.
+
 ## Première méthode
 ####  1. Installer python.
 Pensez à cocher la case PATH lors de l'installation!
